@@ -32,12 +32,13 @@ class AIlib:
             exit()
 
         try:
-            print("Think " + str(layerIndex))
-            weightedInput = np.dot( weights[layerIndex], inp ) # dot multiply the input and the weights
+            weightedInput = np.dot( inp, weights[layerIndex] ) # dot multiply the input and the weights
             layer = AIlib.sigmoid( np.add(weightedInput, bias[layerIndex]) ) # add the biases
 
-            print(layer)
-            print("\n")
+            if( layerIndex < maxLayer ):
+                print("Layer " + str(layerIndex))
+                print(layer)
+                print("\n")
 
             if( layerIndex < maxLayer ):
                 return AIlib.think( layer, weights, bias, layerIndex + 1 )
