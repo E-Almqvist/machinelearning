@@ -14,14 +14,22 @@ class rgb(object):
             self.bias = [ ai.genRandomMatrix(1, 4), ai.genRandomMatrix(1, 4), ai.genRandomMatrix(1, 3) ]
             # This doesn't look very good, but it works so...
 
+            self.generation = 0
+
         else: # if we want to load our progress from before then this would do it
             self.weights = loadedWeights
             self.bias = loadedBias
+
+    def calcError( self, inp:np.array, out:np.array ):
+        cost = ai.calcCost( inp, out )
+        print(cost)
+        # Cost needs to get to 0, we can figure out this with backpropagation
 
     def learn():
         print("learn")
 
     def think(self, inp:np.array):
+        print("-----Gen " + str(self.generation) + "------")
         print("\n-Input-")
         print(inp)
         print("\n")
@@ -30,9 +38,15 @@ class rgb(object):
 
         print("\n-Output-")
         print(res)
+        print("\n----------------\n\n")
+        return res
 
-def init(): # init func
+def init(): # init
     bot = rgb()
-    bot.think( np.array([0.2, 0.4, 0.8]) )
+
+    inpArr = np.array( [0.2, 0.4, 0.8] )
+    res = bot.think( inpArr )
+
+    cost = bot.calcError(inpArr, res)
 
 init()

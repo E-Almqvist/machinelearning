@@ -5,13 +5,13 @@ class AIlib:
         return 1/(1 + np.exp(-x))
 
     def correctFunc(inp:np.array): # generates the correct answer for the AI 
-        return np.array( rgb[2], rgb[1], rgb[0] ) # basically invert the rgb values
+        return np.array( [inp[2], inp[1], inp[0]] ) # basically invert the rgb values
 
     def calcCost( inp:np.array, out:np.array ): # cost function, lower -> good, higher -> bad, bad bot, bad
         sumC = 0
         outLen = len(out)
 
-        correctOut = correctFunc(inp) # the "correct" output
+        correctOut = AIlib.correctFunc(inp) # the "correct" output
 
         for i in range(outLen):
             sumC += (out[i] - correctOut[i])**2 # get the difference of every value
@@ -43,7 +43,7 @@ class AIlib:
             if( layerIndex < maxLayer ):
                 return AIlib.think( layer, weights, bias, layerIndex + 1 )
             else:
-                return layer
+                return np.squeeze(np.asarray(layer))
 
         except (ValueError, IndexError) as err:
             print("\n---------")
