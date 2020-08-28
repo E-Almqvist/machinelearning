@@ -7,11 +7,11 @@ class rgb(object):
 
         if( not loadedWeights or not loadedBias ): # if one is null (None) then just generate new ones
             print("Generating weights and biases...")
-            self.weights = [ ai.genRandomMatrix(3, 4), ai.genRandomMatrix(4, 4), ai.genRandomMatrix(4, 3) ] # array of matrices of weights
+            self.weights = [ ai.genRandomMatrix(4, 3), ai.genRandomMatrix(4, 4), ai.genRandomMatrix(3, 4) ] # array of matrices of weights
             # 3 input neurons -> 4 hidden neurons -> 4 hidden neurons -> 3 output neurons
 
             # Generate the biases
-            self.bias = [ ai.genRandomMatrix(1, 4), ai.genRandomMatrix(1, 4), ai.genRandomMatrix(1, 3) ]
+            self.bias = [ ai.genRandomMatrix(4, 1), ai.genRandomMatrix(4, 1), ai.genRandomMatrix(3, 1) ]
             # This doesn't look very good, but it works so...
 
         else: # if we want to load our progress from before then this would do it
@@ -22,8 +22,8 @@ class rgb(object):
         print("learn")
 
     def think(self, inp:np.array):
-        res = ai.think( np.asmatrix(inp), self.weights, self.bias )
-        print(res)
+        res = ai.think( inp, self.weights, self.bias )
+        print( "Result: " + str(res) )
         # print(self.weights)
         # print(self.bias)
 

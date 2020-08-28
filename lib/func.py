@@ -30,11 +30,16 @@ class AIlib:
             print("Neural Network Error: Length of weights and bias are not equal.")
             print("Weights: ${maxLayer}, Bias: ${biasLen}")
             exit()
+        try:
+            weightedInput = np.dot( weights[layerIndex], inp ) # dot multiply the input and the weights
+            layer = np.add( weightedInput, bias[layerIndex] ) # add the biases
 
-        weightedInput = np.dot( weights[layerIndex], inp ) # dot multiply the input and the weights
-        layer = np.add( weightedInput, bias[layerIndex] ) # add the biases
-
-        if( layerIndex >= maxLayer ):
-            return layer
-        else:
-            think( layer, weights, bias, layerIndex + 1 )
+            if( layerIndex >= maxLayer ):
+                return layer
+            else:
+                print("New think " + str(layerIndex + 1))
+                AIlib.think( layer, weights, bias, layerIndex + 1 )
+        except ValueError as err:
+            print("\n---------")
+            print( "Error: " + str(err) )
+            print( "Layer index: " + str(layerIndex) )
