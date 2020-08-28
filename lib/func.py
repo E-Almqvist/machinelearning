@@ -21,25 +21,31 @@ class AIlib:
     def genRandomMatrix( x:int, y:int, min: float=0.0, max: float=1.0 ): # generate a matrix with x, y dimensions with random values from min-max in it
         return np.random.rand(x, y)
 
-    def think( inp:np.matrix, weights:list, bias:list, layerIndex: int=0 ): # recursive thinking, hehe
+    def think( inp:np.array, weights:list, bias:list, layerIndex: int=0 ): # recursive thinking, hehe
         # the length of weights and bias should be the same
         # if not then the neural net is flawed/incorrect
-        maxLayer = len(weights)
-        biasLen = len(bias)
-        if( maxLayer != len(bias) ):
+        maxLayer = len(weights) - 1
+        biasLen = len(bias) - 1
+        if( maxLayer != biasLen ):
             print("Neural Network Error: Length of weights and bias are not equal.")
-            print("Weights: ${maxLayer}, Bias: ${biasLen}")
+            print( "Weights: " + str(maxLayer) + " Bias: " + str(biasLen) )
             exit()
-        try:
-            weightedInput = np.dot( weights[layerIndex], inp ) # dot multiply the input and the weights
-            layer = np.add( weightedInput, bias[layerIndex] ) # add the biases
 
-            if( layerIndex >= maxLayer ):
-                return layer
+        try:
+            print("Think " + str(layerIndex))
+            weightedInput = np.dot( weights[layerIndex], inp ) # dot multiply the input and the weights
+            layer = AIlib.sigmoid( np.add(weightedInput, bias[layerIndex]) ) # add the biases
+
+            print(layer)
+            print("\n")
+
+            if( layerIndex < maxLayer ):
+                return AIlib.think( layer, weights, bias, layerIndex + 1 )
             else:
-                print("New think " + str(layerIndex + 1))
-                AIlib.think( layer, weights, bias, layerIndex + 1 )
-        except ValueError as err:
+                return layer
+
+        except (ValueError, IndexError) as err:
             print("\n---------")
             print( "Error: " + str(err) )
             print( "Layer index: " + str(layerIndex) )
+            print( "Max layer index: " + str(maxLayer) )

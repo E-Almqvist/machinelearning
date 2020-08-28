@@ -23,9 +23,8 @@ class rgb(object):
 
     def think(self, inp:np.array):
         res = ai.think( inp, self.weights, self.bias )
-        print( "Result: " + str(res) )
-        # print(self.weights)
-        # print(self.bias)
+        print("\n-Result-")
+        print(res)
 
 def init(): # init func
     bot = rgb()
