@@ -22,8 +22,8 @@ class rgb(object):
 
     def calcError( self, inp:np.array, out:np.array ):
         cost = ai.calcCost( inp, out )
-        print(cost)
         # Cost needs to get to 0, we can figure out this with backpropagation
+        return cost
 
     def learn():
         print("learn")
@@ -48,5 +48,7 @@ def init(): # init
     res = bot.think( inpArr )
 
     cost = bot.calcError(inpArr, res)
+
+    print("Cost: " + str(cost))
 
 init()
