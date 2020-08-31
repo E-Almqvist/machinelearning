@@ -16,26 +16,25 @@ class AIlib:
         for i in range(outLen):
             sumC += (out[i] - correctOut[i])**2 # get the difference of every value
 
-        return sumC / outLen # return the average cost of all rows
+        return sumC # return the cost
 
     def genRandomMatrix( x:int, y:int, min: float=0.0, max: float=1.0 ): # generate a matrix with x, y dimensions with random values from min-max in it
-        return np.random.rand(x, y)
+        # apply ranger with * and -
+        mat = np.random.rand(x, y) - 0.25
+        return mat
 
     def think( inp:np.array, weights:list, bias:list, layerIndex: int=0 ): # recursive thinking, hehe
         # the length of weights and bias should be the same
         # if not then the neural net is flawed/incorrect
         maxLayer = len(weights) - 1
-        biasLen = len(bias) - 1
-        if( maxLayer != biasLen ):
-            print("Neural Network Error: Length of weights and bias are not equal.")
-            print( "Weights: " + str(maxLayer) + " Bias: " + str(biasLen) )
-            exit()
 
         try:
             weightedInput = np.dot( inp, weights[layerIndex] ) # dot multiply the input and the weights
             layer = AIlib.sigmoid( np.add(weightedInput, bias[layerIndex]) ) # add the biases
 
             if( layerIndex < maxLayer ):
+                print(weights[layerIndex])
+                print("\n")
                 print("Layer " + str(layerIndex))
                 print(layer)
                 print("\n")
