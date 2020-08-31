@@ -48,7 +48,16 @@ def init(): # init
     res = bot.think( inpArr )
 
     cost = bot.calcError(inpArr, res)
-
     print("Cost: " + str(cost))
+
+    inpArr2 = np.array([0.3, 0.5, 0.9])
+    res2 = bot.think(inpArr2)
+    cost2 = bot.calcError(inpArr2, res2)
+    print("Cost: " + str(cost2))
+    print("\n----")
+
+    print("Gradient\n")
+    gradient = ai.gradient( cost, cost2, inpArr, inpArr2 )
+    print(gradient)
 
 init()

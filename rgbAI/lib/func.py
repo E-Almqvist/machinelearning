@@ -24,11 +24,8 @@ class AIlib:
         return mat
 
     def think( inp:np.array, weights:list, bias:list, layerIndex: int=0 ): # recursive thinking, hehe
-        # the length of weights and bias should be the same
-        # if not then the neural net is flawed/incorrect
-        maxLayer = len(weights) - 1
-
         try:
+            maxLayer = len(weights) - 1
             weightedInput = np.dot( inp, weights[layerIndex] ) # dot multiply the input and the weights
             layer = AIlib.sigmoid( np.add(weightedInput, bias[layerIndex]) ) # add the biases
 
@@ -49,3 +46,7 @@ class AIlib:
             print( "Error: " + str(err) )
             print( "Layer index: " + str(layerIndex) )
             print( "Max layer index: " + str(maxLayer) )
+
+    def gradient( cost1:float, cost2:float, inp1:np.array, inp2:np.array ):
+        return (cost2 - cost1) / (inp2 - inp1)
+
