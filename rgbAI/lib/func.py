@@ -48,5 +48,8 @@ class AIlib:
             print( "Max layer index: " + str(maxLayer) )
 
     def gradient( cost1:float, cost2:float, inp1:np.array, inp2:np.array ):
-        return (cost2 - cost1) / (inp2 - inp1)
+        dY = np.asarray(cost2 - cost1)
+        dX = np.asarray(inp2 - inp1)
+        print(dY, dX)
+        return dY / dX
 
