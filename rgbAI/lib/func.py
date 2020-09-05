@@ -54,7 +54,7 @@ class AIlib:
     def gradient( dCost:float, prop:list ):
         propLen = len(prop)
         gradient = [None] * propLen
-        for i in range( propLen, 0, -1 ):
+        for i in range( propLen, -1, -1 ):
             if( i == propLen ):
                 gradient[i] = dCost / prop[i]
             else:
