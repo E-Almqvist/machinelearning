@@ -39,7 +39,11 @@ class AIlib:
             if( layerIndex < maxLayer ):
                 return AIlib.think( layer, weights, bias, layerIndex + 1 )
             else:
-                return np.squeeze(np.asarray(layer))
+                out = np.squeeze(np.asarray(layer))
+                print("-Result-")
+                print(out)
+                print("\n")
+                return out
 
         except (ValueError, IndexError) as err:
             print("\n---------")
@@ -47,9 +51,32 @@ class AIlib:
             print( "Layer index: " + str(layerIndex) )
             print( "Max layer index: " + str(maxLayer) )
 
-    def gradient( cost1:float, cost2:float, inp1:np.array, inp2:np.array ):
-        dY = np.asarray(cost2 - cost1)
-        dX = np.asarray(inp2 - inp1)
-        print(dY, dX)
-        return dY / dX
+    def gradient( dCost:float, prop:list ):
+        propLen = len(prop)
+        print("PropLEN: ", propLen)
+        print(prop)
+        print("\n")
+        gradient = [None] * propLen
+        for i in range( propLen ):
+            gradient[i] = dCost / prop[i]
 
+        return gradient
+
+    def learn( inp:np.array, weights:list, bias:list, theta:float ):
+        # Calculate the derivative for:
+        # Cost in respect to weights
+        # Cost in respect to biases
+
+        res1 = AIlib.think( inp, weights, bias ) # Think the first result
+        cost1 = AIlib.calcCost( inp, res1 ) # Calculate the cost of the thought result
+
+        inp2 = np.asarray( inp + theta ) # make the new input with `theta` as diff
+        res2 = AIlib.think( inp2, weights, bias ) # Think the second result
+        cost2 = AIlib.calcCost( inp2, res2 ) # Calculate the cost
+
+        dCost = cost2 - cost1 # get the difference
+
+        weightDer = AIlib.gradient( dCost, weights )
+        biasDer = AIlib.gradient( dCost, bias )
+
+        print(weightDer, len(weightDer))

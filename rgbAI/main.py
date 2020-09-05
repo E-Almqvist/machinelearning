@@ -25,8 +25,8 @@ class rgb(object):
         # Cost needs to get to 0, we can figure out this with backpropagation
         return cost
 
-    def learn():
-        print("learn")
+    def learn( self, inp:np.array, theta:float ):
+        ai.learn( inp, self.weights, self.bias, theta )
 
     def think(self, inp:np.array):
         print("-----Gen " + str(self.generation) + "------")
@@ -45,19 +45,6 @@ def init(): # init
     bot = rgb()
 
     inpArr = np.array( [0.2, 0.4, 0.8] )
-    res = bot.think( inpArr )
-
-    cost = bot.calcError(inpArr, res)
-    print("Cost: " + str(cost))
-
-    inpArr2 = np.array([0.3, 0.5, 0.9])
-    res2 = bot.think(inpArr2)
-    cost2 = bot.calcError(inpArr2, res2)
-    print("Cost: " + str(cost2))
-    print("\n----")
-
-    print("Gradient\n")
-    gradient = ai.gradient( cost, cost2, inpArr, inpArr2 )
-    print(gradient)
+    bot.learn( inpArr, 0.1 )
 
 init()
