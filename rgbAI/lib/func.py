@@ -53,9 +53,9 @@ class AIlib:
 
     def gradient( dCost:float, prop:list ):
         propLen = len(prop)
-        print("PropLEN: ", propLen)
-        print(prop)
-        print("\n")
+        #print("PropLEN: ", propLen)
+        #print(prop)
+        #print("\n")
         gradient = [None] * propLen
         for i in range( propLen ):
             gradient[i] = dCost / prop[i]
@@ -79,4 +79,4 @@ class AIlib:
         weightDer = AIlib.gradient( dCost, weights )
         biasDer = AIlib.gradient( dCost, bias )
 
-        print(weightDer, len(weightDer))
+        print(weights, len(weights))
