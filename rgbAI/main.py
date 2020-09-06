@@ -16,6 +16,9 @@ class rgb(object):
 
             self.generation = 0
 
+            print( self.weights )
+            print( self.bias )
+
         else: # if we want to load our progress from before then this would do it
             self.weights = loadedWeights
             self.bias = loadedBias
@@ -26,9 +29,9 @@ class rgb(object):
         return cost
 
     def learn( self, inp:np.array, theta:float ):
-        ai.learn( inp, self.weights, self.bias, theta )
+        ai.learn( inp, self, theta )
 
-    def think(self, inp:np.array):
+    def think( self, inp:np.array ):
         print("-----Gen " + str(self.generation) + "------")
         print("\n-Input-")
         print(inp)
@@ -41,10 +44,18 @@ class rgb(object):
         print("\n----------------\n\n")
         return res
 
+    def train( self ):
+        for i in range(self.traintimes):
+            inpArr = np.asarray(np.random.rand( 1, 3 ))[0]
+            print("##################", inpArr)
+            self.generation = i
+            self.learn( inpArr, 0.1 )
+
 def init(): # init
     bot = rgb()
 
-    inpArr = np.array( [0.2, 0.4, 0.8] )
-    bot.learn( inpArr, 0.1 )
+    bot.traintimes = 100
+    bot.train()
+
 
 init()
