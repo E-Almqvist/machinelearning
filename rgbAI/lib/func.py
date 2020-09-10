@@ -16,7 +16,7 @@ class AIlib:
         for i in range(outLen):
             sumC += (out[i] - correctOut[i])**2 # get the difference of every value
 
-        return sumC # return the cost
+        return sumC / outLen # return the cost
 
     def genRandomMatrix( x:int, y:int, min: float=0.0, max: float=1.0 ): # generate a matrix with x, y dimensions with random values from min-max in it
         # apply ranger with * and -
