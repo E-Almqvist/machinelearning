@@ -16,6 +16,8 @@ class rgb(object):
 
             self.generation = 0
 
+            self.learningrate = 0.01 # the learning rate of this ai
+
             print( self.weights )
             print( self.bias )
 

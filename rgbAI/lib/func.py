@@ -24,44 +24,21 @@ class AIlib:
         return mat
 
     def think( inp:np.array, weights:list, bias:list, layerIndex: int=0 ): # recursive thinking, hehe
-        try:
-            maxLayer = len(weights) - 1
-            weightedInput = np.dot( inp, weights[layerIndex] ) # dot multiply the input and the weights
-            layer = AIlib.sigmoid( np.add(weightedInput, bias[layerIndex]) ) # add the biases
+        maxLayer = len(weights) - 1
+        weightedInput = np.dot( inp, weights[layerIndex] ) # dot multiply the input and the weights
+        layer = AIlib.sigmoid( np.add(weightedInput, bias[layerIndex]) ) # add the biases
 
-            if( layerIndex < maxLayer ):
-                print(weights[layerIndex])
-                print("\n")
-                print("Layer " + str(layerIndex))
-                print(layer)
-                print("\n")
+        if( layerIndex < maxLayer ):
+            return AIlib.think( layer, weights, bias, layerIndex + 1 )
+        else:
+            out = np.squeeze(np.asarray(layer))
+            print("-Result-")
+            print(out)
+            print("\n")
+            return out
 
-            if( layerIndex < maxLayer ):
-                return AIlib.think( layer, weights, bias, layerIndex + 1 )
-            else:
-                out = np.squeeze(np.asarray(layer))
-                print("-Result-")
-                print(out)
-                print("\n")
-                return out
-
-        except (ValueError, IndexError) as err:
-            print("\n---------")
-            print( "Error: " + str(err) )
-            print( "Layer index: " + str(layerIndex) )
-            print( "Max layer index: " + str(maxLayer) )
-
-    def gradient( dCost:float, prop:list ):
-        propLen = len(prop)
-        gradient = [None] * propLen
-        for i in range( propLen - 1, -1, -1 ):
-            # if( i == propLen - 1 ):
-            #    gradient[i] = dCost / prop[i]
-            # else:
-            #    gradient[i] = dCost / (prop[i] + gradient[i+1])
-            gradient[i] = dCost / prop[i]
-
-        return gradient
+    def gradient( dCost:float, dx:float, prop:list ):
+        # Calculate the gradient 
 
     def mutateProp( prop:list, gradient:list ):
         newProp = [None] * len(gradient)
@@ -85,10 +62,10 @@ class AIlib:
 
         dCost = cost2 - cost1 # get the difference
 
-        weightDer = AIlib.gradient( dCost, obj.weights )
-        biasDer = AIlib.gradient( dCost, obj.bias )
+        weightDer = AIlib.gradient( dCost, theta, obj.weights )
+        biasDer = AIlib.gradient( dCost, theta, obj.bias )
 
-        obj.weights = AIlib.mutateProp( obj.weights, weightDer )
-        obj.bias = AIlib.mutateProp( obj.bias, biasDer )
+        #obj.weights = AIlib.mutateProp( obj.weights, weightDer )
+        #obj.bias = AIlib.mutateProp( obj.bias, biasDer )
 
         print("Cost: ", cost1)
