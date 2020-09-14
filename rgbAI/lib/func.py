@@ -10,16 +10,11 @@ class AIlib:
     def correctFunc(inp:np.array): # generates the correct answer for the AI 
         return np.array( [inp[2], inp[1], inp[0]] ) # basically invert the rgb values
 
-    def calcCost( inp:np.array, out:np.array ): # cost function, lower -> good, higher -> bad, bad bot, bad
-        sumC = 0
-        outLen = len(out)
+    def calcCost( predicted:np.array, correct:np.array ): # cost function, lower -> good, higher -> bad, bad bot, bad
+        return (predicted - correct)**2
 
-        correctOut = AIlib.correctFunc(inp) # the "correct" output
-
-        diff = (out - outLen)**2
-        sumC = diff.sum()
-
-        return sumC / outLen # return the cost
+    def calcCost_derv( predicted:np.array, correct:np.array ):
+        return (predicted - correct)*2
 
     def genRandomMatrix( x:int, y:int, min: float=0.0, max: float=1.0 ): # generate a matrix with x, y dimensions with random values from min-max in it
         # apply ranger with * and -
@@ -40,15 +35,22 @@ class AIlib:
             print("\n")
             return out
 
-    def gradient( dCost:float, out:np.array, inp:np.array ):
+    def gradient( cost:float, inp:np.array, predicted:np.array, correct:np.array ):
         # Calculate the gradient
-        print("")
+        derv1 = AIlib.calcCost_derv( predicted, correct )
+        derv2 = AIlib.sigmoid_der( predicted )
 
-    def mutateProp( prop:list, gradient:list ):
-        newProp = [None] * len(gradient)
+        gradient = np.transpose( np.asmatrix(derv1 * derv2 * inp) )
+        print("Inp:", inp)
+        print("Grad:", gradient)
+        return gradient
 
-        for i in range(len(gradient)):
-            newProp[i] = prop[i] - gradient[i] # * theta (relative to slope or something)
+
+    def mutateProp( prop:list, lr, gradient ):
+        newProp = [None] * len(prop)
+
+        for i in range(len(prop)):
+            newProp[i] = prop[i] - (lr*gradient)
 
         return newProp
 
@@ -57,19 +59,17 @@ class AIlib:
         # Cost in respect to weights
         # Cost in respect to biases
 
-        res1 = AIlib.think( inp, obj.weights, obj.bias ) # Think the first result
-        cost1 = AIlib.calcCost( inp, res1 ) # Calculate the cost of the thought result
+        predicted = AIlib.think( inp, obj.weights, obj.bias ) # Think the first result
+        correct = AIlib.correctFunc( inp )
+        cost = AIlib.calcCost( predicted, correct ) # Calculate the cost of the thought result
 
         #inp2 = np.asarray( inp + theta ) # make the new input with `theta` as diff
         #res2 = AIlib.think( inp2, obj.weights, obj.bias ) # Think the second result
         #cost2 = AIlib.calcCost( inp2, res2 ) # Calculate the cost
 
-        dCost = cost1 # get the difference # cost2 - cost1
+        gradient = AIlib.gradient( cost, inp, predicted, correct )
 
-        weightDer = AIlib.gradient( dCost, theta, obj.weights )
-        biasDer = AIlib.gradient( dCost, theta, obj.bias )
-
-        obj.weights = AIlib.mutateProp( obj.weights, weightDer )
-        obj.bias = AIlib.mutateProp( obj.bias, biasDer )
+        obj.weights = AIlib.mutateProp( obj.weights, obj.learningrate, gradient )
+        obj.bias = AIlib.mutateProp( obj.bias, obj.learningrate, gradient )
 
         print("Cost: ", cost1)

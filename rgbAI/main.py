@@ -16,7 +16,7 @@ class rgb(object):
 
             self.generation = 0
 
-            self.learningrate = 0.01 # the learning rate of this ai
+            self.learningrate = 0.1 # the learning rate of this ai
 
             print( self.weights )
             print( self.bias )
@@ -49,11 +49,10 @@ class rgb(object):
     def train( self ):
         for i in range(self.traintimes):
             inpArr = np.asarray(np.random.rand( 1, 3 ))[0]
-            print("##################", inpArr)
             self.generation = i
             self.learn( inpArr, 0.1 )
 
-def init(): # init
+def init():
     bot = rgb()
 
     bot.traintimes = 100
