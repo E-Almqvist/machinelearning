@@ -4,6 +4,9 @@ class AIlib:
     def sigmoid(x):
         return 1/(1 + np.exp(-x))
 
+    def sigmoid_der(x):
+        return AIlib.sigmoid(x) * (1 - AIlib.sigmoid(x))
+
     def correctFunc(inp:np.array): # generates the correct answer for the AI 
         return np.array( [inp[2], inp[1], inp[0]] ) # basically invert the rgb values
 
@@ -13,8 +16,8 @@ class AIlib:
 
         correctOut = AIlib.correctFunc(inp) # the "correct" output
 
-        for i in range(outLen):
-            sumC += (out[i] - correctOut[i])**2 # get the difference of every value
+        diff = (out - outLen)**2
+        sumC = diff.sum()
 
         return sumC / outLen # return the cost
 
@@ -37,8 +40,9 @@ class AIlib:
             print("\n")
             return out
 
-    def gradient( dCost:float, dx:float, prop:list ):
-        # Calculate the gradient 
+    def gradient( dCost:float, out:np.array, inp:np.array ):
+        # Calculate the gradient
+        print("")
 
     def mutateProp( prop:list, gradient:list ):
         newProp = [None] * len(gradient)
@@ -56,16 +60,16 @@ class AIlib:
         res1 = AIlib.think( inp, obj.weights, obj.bias ) # Think the first result
         cost1 = AIlib.calcCost( inp, res1 ) # Calculate the cost of the thought result
 
-        inp2 = np.asarray( inp + theta ) # make the new input with `theta` as diff
-        res2 = AIlib.think( inp2, obj.weights, obj.bias ) # Think the second result
-        cost2 = AIlib.calcCost( inp2, res2 ) # Calculate the cost
+        #inp2 = np.asarray( inp + theta ) # make the new input with `theta` as diff
+        #res2 = AIlib.think( inp2, obj.weights, obj.bias ) # Think the second result
+        #cost2 = AIlib.calcCost( inp2, res2 ) # Calculate the cost
 
-        dCost = cost2 - cost1 # get the difference
+        dCost = cost1 # get the difference # cost2 - cost1
 
         weightDer = AIlib.gradient( dCost, theta, obj.weights )
         biasDer = AIlib.gradient( dCost, theta, obj.bias )
 
-        #obj.weights = AIlib.mutateProp( obj.weights, weightDer )
-        #obj.bias = AIlib.mutateProp( obj.bias, biasDer )
+        obj.weights = AIlib.mutateProp( obj.weights, weightDer )
+        obj.bias = AIlib.mutateProp( obj.bias, biasDer )
 
         print("Cost: ", cost1)
