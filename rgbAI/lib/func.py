@@ -35,7 +35,7 @@ class AIlib:
             print("\n")
             return out
 
-    def gradient( cost:float, inp:np.array, predicted:np.array, correct:np.array ):
+    def gradient( prop, cost:float, inp:np.array, predicted:np.array, correct:np.array ):
         # Calculate the gradient
         derv1 = AIlib.calcCost_derv( predicted, correct )
         derv2 = AIlib.sigmoid_der( predicted )
@@ -43,7 +43,7 @@ class AIlib:
         gradient = np.transpose( np.asmatrix(derv1 * derv2 * inp) )
         print("Inp:", inp)
         print("Grad:", gradient)
-        return gradient
+        return gradient / prop
 
 
     def mutateProp( prop:list, lr, gradient ):
@@ -67,9 +67,10 @@ class AIlib:
         #res2 = AIlib.think( inp2, obj.weights, obj.bias ) # Think the second result
         #cost2 = AIlib.calcCost( inp2, res2 ) # Calculate the cost
 
-        gradient = AIlib.gradient( cost, inp, predicted, correct )
+        gradientWeight = AIlib.gradient( obj.weights, cost, inp, predicted, correct )
+        gradientBias = AIlib.gradient( obj.bias, cost, inp, predicted, correct )
 
-        obj.weights = AIlib.mutateProp( obj.weights, obj.learningrate, gradient )
-        obj.bias = AIlib.mutateProp( obj.bias, obj.learningrate, gradient )
+        obj.weights = AIlib.mutateProp( obj.weights, obj.learningrate, gradientWeight )
+        obj.bias = AIlib.mutateProp( obj.bias, obj.learningrate, gradientBias )
 
         print("Cost: ", cost1)
