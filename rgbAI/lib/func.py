@@ -43,7 +43,7 @@ class AIlib:
         gradient = np.transpose( np.asmatrix(derv1 * derv2 * inp) )
         print("Inp:", inp)
         print("Grad:", gradient)
-        return gradient / prop
+        return gradient
 
 
     def mutateProp( prop:list, lr, gradient ):
