@@ -46,7 +46,7 @@ class AIlib:
         return gradient
 
 
-    def mutateProp( prop:list, lr, gradient ):
+    def mutateProp( prop:list, lr:float, gradient ):
         newProp = [None] * len(prop)
 
         for i in range(len(prop)):
