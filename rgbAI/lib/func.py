@@ -21,24 +21,28 @@ class AIlib:
         mat = np.random.rand(x, y) - 0.25
         return mat
 
-    def think( inp:np.array, weights:list, bias:list, layerIndex: int=0 ): # recursive thinking, hehe
-        maxLayer = len(weights) - 1
-        weightedLayer = np.dot( inp, weights[layerIndex] ) # dot multiply the input and the weights
-        layer = AIlib.sigmoid( np.add(weightedLayer, bias[layerIndex]) ) # add the biases
+    def think( inp:np.array, obj, layerIndex: int=0 ): # recursive thinking, hehe
+        maxLayer = len(obj.weights) - 1
+        weightedLayer = np.dot( inp, obj.weights[layerIndex] ) # dot multiply the input and the weights
+        layer = AIlib.sigmoid( np.add(weightedLayer, obj.bias[layerIndex]) ) # add the biases
 
         if( layerIndex < maxLayer ):
-            return AIlib.think( layer, weights, bias, layerIndex + 1 )
+            return AIlib.think( layer, obj, layerIndex + 1 )
         else:
             out = np.squeeze(np.asarray(layer))
             return out
 
-    def gradient( prop, gradIndex: int=0 ):
-        # Calculate the gradient
-        # i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
-        # So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
+    def propDer( dCost, dProp ):
+        # Calculate the partial derivative for that prop
+        return dCost / dProp
 
-        return gradient
+    def gradient( inp:np.array, obj, prop, theta ):
+        # Calculate the gradient for that prop
+        prop2 = prop + theta
+        # then create another instance of the object and compare
 
+        # calculate the diff between the new prop and old
+        res = AIlib.think( inp, obj. )
 
     def mutateProp( prop:list, lr:float, gradient ):
         newProp = [None] * len(prop)
@@ -52,4 +56,7 @@ class AIlib:
         # Calculate the derivative for:
         # Cost in respect to weights
         # Cost in respect to biases
+
+        # i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
+        # So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
