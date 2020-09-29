@@ -21,23 +21,25 @@ class AIlib:
         mat = np.random.rand(x, y) - 0.25
         return mat
 
-    def think( inp:np.array, weights:list, bias:list, layerIndex: int=0, layers: list=[] ): # recursive thinking, hehe
+    def think( inp:np.array, weights:list, bias:list, layerIndex: int=0 ): # recursive thinking, hehe
         maxLayer = len(weights) - 1
         weightedLayer = np.dot( inp, weights[layerIndex] ) # dot multiply the input and the weights
         layer = AIlib.sigmoid( np.add(weightedLayer, bias[layerIndex]) ) # add the biases
-        layers[layerIndex] = layer # save it to the layer buffer
 
         if( layerIndex < maxLayer ):
-            return AIlib.think( layer, weights, bias, layerIndex + 1, layers )
+            return AIlib.think( layer, weights, bias, layerIndex + 1 )
         else:
             out = np.squeeze(np.asarray(layer))
             print("-Result-")
             print(out)
             print("\n")
-            return out, layers
+            return out
 
     def gradient( prop, cost:float, inp:np.array, predicted:np.array, correct:np.array ):
         # Calculate the gradient
+        # i.e. : W' = W - lr * gradient (respect to W) = W - lr*[ dC / dW[i] ... ]
+        # So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
+
         return gradient
 
 
@@ -54,12 +56,3 @@ class AIlib:
         # Cost in respect to weights
         # Cost in respect to biases
 
-        predicted = AIlib.think( inp, obj.weights, obj.bias ) # Think the first result
-        correct = AIlib.correctFunc( inp )
-        cost = AIlib.calcCost( predicted, correct ) # Calculate the cost of the thought result
-
-        inp2 = np.asarray( inp + theta ) # make the new input with `theta` as diff
-        res2 = AIlib.think( inp2, obj.weights, obj.bias ) # Think the second result
-        cost2 = AIlib.calcCost( inp2, res2 ) # Calculate the cost
-
-        print("Cost: ", cost1)
