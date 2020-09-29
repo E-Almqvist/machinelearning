@@ -30,14 +30,11 @@ class AIlib:
             return AIlib.think( layer, weights, bias, layerIndex + 1 )
         else:
             out = np.squeeze(np.asarray(layer))
-            print("-Result-")
-            print(out)
-            print("\n")
             return out
 
-    def gradient( prop, cost:float, inp:np.array, predicted:np.array, correct:np.array ):
+    def gradient( prop, gradIndex: int=0 ):
         # Calculate the gradient
-        # i.e. : W' = W - lr * gradient (respect to W) = W - lr*[ dC / dW[i] ... ]
+        # i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
         # So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
         return gradient
