@@ -80,7 +80,7 @@ class AIlib:
         if( newLayer <= maxLayer ):
             return AIlib.gradient( inp, obj, theta, maxLayer, newLayer, grads, obj1, obj2 )
         else:
-            return grads, cost2
+            return grads, res1, cost1
 
     def mutateProps( obj, maxLen:int, gradient:list ):
         for i in range(maxLen):
@@ -95,7 +95,7 @@ class AIlib:
         # i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
         # So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
         maxLen = len(obj.bias)
-        grads, cost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
+        grads, res, cost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
         AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
 
-        print("Cost:", cost)
+        print("Cost:", cost, "|", inp, res)
