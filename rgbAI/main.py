@@ -55,7 +55,7 @@ class rgb(object):
 def init():
     bot = rgb()
 
-    bot.traintimes = 100
+    bot.traintimes = 1
     bot.train()
 
 
