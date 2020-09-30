@@ -32,20 +32,23 @@ class rgb(object):
         ai.learn( 3, 0.001, self, 0.001 )
 
     def think( self, inp:np.array ):
-        print("-----Gen " + str(self.generation) + "------")
         print("\n-Input-")
         print(inp)
         print("\n")
 
-        res = ai.think( inp, self.weights, self.bias )
+        res = ai.think( inp, self )
 
         print("\n-Output-")
         print(res)
-        print("\n----------------\n\n")
         return res
 
 def init():
     bot = rgb()
     bot.learn()
+
+    inpArr = np.asarray([1.0, 1.0, 1.0])
+    res = bot.think( inpArr )
+    err = bot.calcError( inpArr, res )
+    print(err)
 
 init()

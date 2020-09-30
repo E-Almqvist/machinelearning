@@ -82,10 +82,13 @@ class AIlib:
         else:
             return grads, res1, cost1
 
-    def mutateProps( obj, maxLen:int, gradient:list ):
+    def mutateProps( inpObj, maxLen:int, gradient:list ):
+        obj = copy(inpObj)
         for i in range(maxLen):
             obj.weights[i] -= obj.learningrate * gradient[i]["weight"] # mutate the weights
             obj.bias[i] -= obj.learningrate * gradient[i]["bias"]
+
+        return obj
 
     def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None ):
         # Calculate the derivative for:
@@ -95,19 +98,15 @@ class AIlib:
         # i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
         # So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
-        if( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
-            inp = np.asarray(np.random.rand( 1, inputNum ))[0]
+        inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
 
+        while( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
             maxLen = len(obj.bias)
             grads, res, curCost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
-            AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
+            obj = AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
             print("Cost:", curCost, "|", inp, res)
 
-            return AIlib.learn( inputNum, targetCost, obj, theta, curCost )
 
-        else:
-            print("DONE\n")
-            print(obj.weights)
-            print(obj.bias)
-            return
-
+        print("DONE\n")
+        print(obj.weights)
+        print(obj.bias)
