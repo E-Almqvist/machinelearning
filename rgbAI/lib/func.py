@@ -4,17 +4,15 @@ class AIlib:
     def sigmoid(x):
         return 1/(1 + np.exp(-x))
 
-    def sigmoid_der(x):
-        return AIlib.sigmoid(x) * (1 - AIlib.sigmoid(x))
-
     def correctFunc(inp:np.array): # generates the correct answer for the AI 
         return np.array( [inp[2], inp[1], inp[0]] ) # basically invert the rgb values
 
     def calcCost( predicted:np.array, correct:np.array ): # cost function, lower -> good, higher -> bad, bad bot, bad
         return (predicted - correct)**2
 
-    def calcCost_derv( predicted:np.array, correct:np.array ):
-        return (predicted - correct)*2
+    def getThinkCost( inp:np.array, predicted:np.array ):
+        corr = correctFunc(inp)
+        return calcCost( predicted, corr )
 
     def genRandomMatrix( x:int, y:int, min: float=0.0, max: float=1.0 ): # generate a matrix with x, y dimensions with random values from min-max in it
         # apply ranger with * and -
@@ -36,13 +34,32 @@ class AIlib:
         # Calculate the partial derivative for that prop
         return dCost / dProp
 
-    def gradient( inp:np.array, obj, prop, theta ):
+    def gradient( inp:np.array, obj, theta, layerIndex: int=0, obj1: None, obj2: None ):
         # Calculate the gradient for that prop
-        prop2 = prop + theta
-        # then create another instance of the object and compare
 
-        # calculate the diff between the new prop and old
-        res = AIlib.think( inp, obj. )
+        # Create new instances of the object
+        if( !obj1 or !obj2 ):
+            obj1 = obj
+            obj2 = obj
+
+        obj2.weights[layerIndex] += theta # mutate the second object
+        obj2.bias[layerIndex] += theta
+
+        # Compare the two instances
+        res1 = AIlib.think( inp, obj1 )
+        cost1 = AIlib.getThinkCost( inp, res1 ) # get the cost
+
+        res2 = AIlib.think( inp, obj2 )
+        cost2 = AIlib.getThinkCost( inp, res2 ) # get the second cost
+
+        # Get the usefull variables
+        dCost = cost2 - cost1
+        dWeight = obj2.weights[layerIndex] - obj1.weights[layerIndex]
+        dBias = obj2.bias[layerIndex] - obj1.bias[layerIndex]
+
+        # Calculate the gradient for the layer
+        weightDer = AIlib.propDer( dCost, dWeight )
+        biasDer = AIlib.propDer( dCost, dBias )
 
     def mutateProp( prop:list, lr:float, gradient ):
         newProp = [None] * len(prop)
