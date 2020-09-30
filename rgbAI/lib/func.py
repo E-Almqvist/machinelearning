@@ -42,7 +42,10 @@ class AIlib:
         print(dCost, dProp)
         return dCost / dProp
 
-    def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads: list=[], obj1=None, obj2=None ): # Calculate the gradient for that prop
+    def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads: list, obj1=None, obj2=None ): # Calculate the gradient for that prop
+        if( not grads ):
+            grads = [None] * maxLayer
+
         # Create new instances of the object
         if( not obj1 or not obj2 ):
             obj1 = obj
