@@ -52,7 +52,7 @@ class AIlib:
         res2 = AIlib.think( inp, obj2 )
         cost2 = AIlib.getThinkCost( inp, res2 ) # get the second cost
 
-        # Get the usefull variables
+        # Actually calculate stuff 
         dCost = cost2 - cost1
         dWeight = obj2.weights[layerIndex] - obj1.weights[layerIndex]
         dBias = obj2.bias[layerIndex] - obj1.bias[layerIndex]
