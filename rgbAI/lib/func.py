@@ -34,7 +34,7 @@ class AIlib:
         # Calculate the partial derivative for that prop
         return dCost / dProp
 
-    def gradient( inp:np.array, obj, theta, layerIndex: int=0, obj1: None, obj2: None ):
+    def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads: list=[], obj1=None, obj2=None ):
         # Calculate the gradient for that prop
 
         # Create new instances of the object
@@ -60,6 +60,18 @@ class AIlib:
         # Calculate the gradient for the layer
         weightDer = AIlib.propDer( dCost, dWeight )
         biasDer = AIlib.propDer( dCost, dBias )
+
+        # Append the gradients to the list
+        grads[layerIndex] = {
+            "weight": weightDer,
+            "bias": biasDer
+        }
+
+        newLayer = layerIndex + 1
+        if( newLayer <= maxLayer ):
+            return AIlib.gradient( inp, obj, theta, maxLayer, newLayer, grads, obj1, obj2 )
+        else:
+            return grads
 
     def mutateProp( prop:list, lr:float, gradient ):
         newProp = [None] * len(prop)
