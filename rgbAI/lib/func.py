@@ -42,7 +42,8 @@ class AIlib:
         print(dCost, dProp)
         return dCost / dProp
 
-    def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads: list, obj1=None, obj2=None ): # Calculate the gradient for that prop
+    def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads=None, obj1=None, obj2=None ): # Calculate the gradient for that prop
+        # Check if grads exists, if not create the buffer
         if( not grads ):
             grads = [None] * maxLayer
 
