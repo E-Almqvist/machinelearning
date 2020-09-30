@@ -14,9 +14,7 @@ class rgb(object):
             self.bias = [ ai.genRandomMatrix(1, 4), ai.genRandomMatrix(1, 4), ai.genRandomMatrix(1, 3) ]
             # This doesn't look very good, but it works so...
 
-            self.generation = 0
-
-            self.learningrate = 0.1 # the learning rate of this ai
+            self.learningrate = 0.01 # the learning rate of this ai
 
             print( self.weights )
             print( self.bias )
@@ -30,8 +28,8 @@ class rgb(object):
         # Cost needs to get to 0, we can figure out this with backpropagation
         return cost
 
-    def learn( self, inp:np.array, theta:float ):
-        ai.learn( inp, self, theta )
+    def learn( self ):
+        ai.learn( 3, 0.001, self, 0.0001 )
 
     def think( self, inp:np.array ):
         print("-----Gen " + str(self.generation) + "------")
@@ -46,17 +44,8 @@ class rgb(object):
         print("\n----------------\n\n")
         return res
 
-    def train( self ):
-        for i in range(self.traintimes):
-            inpArr = np.asarray(np.random.rand( 1, 3 ))[0]
-            self.generation = i
-            self.learn( inpArr, 0.1 )
-
 def init():
     bot = rgb()
-
-    bot.traintimes = 10000
-    bot.train()
-
+    bot.learn()
 
 init()

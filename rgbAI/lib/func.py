@@ -6,7 +6,7 @@ class AIlib:
         return 1/(1 + np.exp(-x))
 
     def correctFunc(inp:np.array): # generates the correct answer for the AI 
-        return np.array( [inp[2], inp[1], inp[0]] ) # basically invert the rgb values
+        return np.asarray( [1.0 - inp[0], 1.0 - inp[1], 1.0 - inp[2]] ) # basically invert the rgb values
 
     def calcCost( predicted:np.array, correct:np.array ): # cost function, lower -> good, higher -> bad, bad bot, bad
         costSum = 0
@@ -87,15 +87,27 @@ class AIlib:
             obj.weights[i] -= obj.learningrate * gradient[i]["weight"] # mutate the weights
             obj.bias[i] -= obj.learningrate * gradient[i]["bias"]
 
-    def learn( inp:np.array, obj, theta:float ):
+    def learn( inputNum:int, targetCost:float, obj, curCost: float=None ):
         # Calculate the derivative for:
         # Cost in respect to weights
         # Cost in respect to biases
 
         # i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
         # So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
-        maxLen = len(obj.bias)
-        grads, res, cost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
-        AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
 
-        print("Cost:", cost, "|", inp, res)
+        if( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
+            inp = np.asarray(np.random.rand( 1, inputNum ))[0]
+
+            maxLen = len(obj.bias)
+            grads, res, curCost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
+            AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
+            print("Cost:", curCost, "|", inp, res)
+
+            return AIlib.learn( inputNum, targetCost, obj, theta, curCost )
+
+        else:
+            print("DONE\n")
+            print(obj.weights)
+            print(obj.bias)
+            return
+
