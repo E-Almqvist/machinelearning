@@ -87,7 +87,7 @@ class AIlib:
             obj.weights[i] -= obj.learningrate * gradient[i]["weight"] # mutate the weights
             obj.bias[i] -= obj.learningrate * gradient[i]["bias"]
 
-    def learn( inputNum:int, targetCost:float, obj, curCost: float=None ):
+    def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None ):
         # Calculate the derivative for:
         # Cost in respect to weights
         # Cost in respect to biases
