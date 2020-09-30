@@ -1,4 +1,5 @@
 import numpy as np
+from copy import deepcopy as copy
 
 class AIlib:
     def sigmoid(x):
@@ -38,8 +39,6 @@ class AIlib:
 
     def propDer( dCost, dProp ):
         # Calculate the partial derivative for that prop
-        #print("################")
-        #print(dCost, dProp)
         return dCost / dProp
 
     def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads=None, obj1=None, obj2=None ): # Calculate the gradient for that prop
@@ -49,8 +48,8 @@ class AIlib:
 
         # Create new instances of the object
         if( not obj1 or not obj2 ):
-            obj1 = obj
-            obj2 = obj
+            obj1 = copy(obj) # annoying way to create a new instance of the object
+            obj2 = copy(obj)
 
         obj2.weights[layerIndex] += theta # mutate the second object
         obj2.bias[layerIndex] += theta
