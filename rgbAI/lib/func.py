@@ -8,11 +8,17 @@ class AIlib:
         return np.array( [inp[2], inp[1], inp[0]] ) # basically invert the rgb values
 
     def calcCost( predicted:np.array, correct:np.array ): # cost function, lower -> good, higher -> bad, bad bot, bad
-        return (predicted - correct)**2
+        costSum = 0
+        maxLen = len(correct)
+
+        for i in range(maxLen):
+            costSum += (predicted[i] - correct[i])**2
+
+        return costSum / maxLen
 
     def getThinkCost( inp:np.array, predicted:np.array ):
-        corr = correctFunc(inp)
-        return calcCost( predicted, corr )
+        corr = AIlib.correctFunc(inp)
+        return AIlib.calcCost( predicted, corr )
 
     def genRandomMatrix( x:int, y:int, min: float=0.0, max: float=1.0 ): # generate a matrix with x, y dimensions with random values from min-max in it
         # apply ranger with * and -
@@ -32,13 +38,13 @@ class AIlib:
 
     def propDer( dCost, dProp ):
         # Calculate the partial derivative for that prop
+        print("################")
+        print(dCost, dProp)
         return dCost / dProp
 
-    def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads: list=[], obj1=None, obj2=None ):
-        # Calculate the gradient for that prop
-
+    def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads: list=[], obj1=None, obj2=None ): # Calculate the gradient for that prop
         # Create new instances of the object
-        if( !obj1 or !obj2 ):
+        if( not obj1 or not obj2 ):
             obj1 = obj
             obj2 = obj
 
@@ -88,4 +94,7 @@ class AIlib:
 
         # i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
         # So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
+        grads = AIlib.gradient( inp, obj, theta, len(obj.bias) - 1 )
+        print("####\n\n\n\n")
+        print(grads)
 
