@@ -29,7 +29,7 @@ class rgb(object):
         return cost
 
     def learn( self ):
-        ai.learn( 3, 0.01, self, 0.001 )
+        ai.learn( 3, 0.0001, self, 0.001 )
 
     def think( self, inp:np.array ):
         print("\n-Input-")
