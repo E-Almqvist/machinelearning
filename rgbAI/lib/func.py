@@ -98,8 +98,9 @@ class AIlib:
         # i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
         # So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
+        inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
+
         while( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
-            inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
             maxLen = len(obj.bias)
             grads, res, curCost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
             obj = AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
