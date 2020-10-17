@@ -140,7 +140,7 @@ class AIlib:
 			grads, curCost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
 
 			obj = AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
-			print("Cost:", curCost)
+			print(f"Cost: {curCost}")
 
 
 		print("DONE\n")
