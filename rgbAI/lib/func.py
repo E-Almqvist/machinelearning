@@ -13,7 +13,7 @@ class AIlib:
 		maxLen = len(correct)
 
 		for i in range(maxLen):
-			costSum += (predicted[i] - correct[i])**2
+			costSum += abs((predicted[i] - correct[i]))
 
 		return costSum / maxLen
 
