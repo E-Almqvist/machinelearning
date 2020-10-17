@@ -41,7 +41,7 @@ class AIlib:
 		# Calculate the partial derivative for that prop
 		return dCost / dProp
 
-	def compareAIobjects( obj1, obj2 ):
+	def compareAIobjects( inp, obj1, obj2 ):
 		# Compare the two instances
 		res1 = AIlib.think( inp, obj1 )
 		cost1 = AIlib.getThinkCost( inp, res1 ) # get the cost
@@ -51,31 +51,46 @@ class AIlib:
 
 		# Actually calculate stuff 
 		dCost = cost2 - cost1
-		return dCost
+		return dCost, cost1
 
-	def compareInstanceWeight( obj, theta, layerIndex, neuronIndex_X=0, neuronIndex_Y=0 ):
+	def compareInstanceWeight( obj, inp, theta:float, layerIndex:int, neuronIndex_X:int, neuronIndex_Y:int ):
 		# Create new a instance of the object
 		obj2 = copy(obj) # annoying way to create a new instance of the object
 
 		obj2.weights[layerIndex][neuronIndex_X][neuronIndex_Y] += theta # mutate the second objects neuron
-		dCost = AIlib.compareAIobjects( obj, obj2 ) # compare the two and get the dCost with respect to the weights
+		dCost, curCost = AIlib.compareAIobjects( inp, obj, obj2 ) # compare the two and get the dCost with respect to the weights
 
-		return dCost
+		return dCost, curCost
 
-	def compareInstanceBias( obj, theta, layerIndex, biasIndex ):
+	def compareInstanceBias( obj, inp, theta:float, layerIndex:int, biasIndex:int ):
 		obj2 = copy(obj)
 
-		obj2.bias[layerIndex][biasIndex] += theta # do the same thing for the bias
-		dCost = AIlib.compareAIobjects( obj, obj2 )
+		obj2.bias[layerIndex][0][biasIndex] += theta # do the same thing for the bias
+		dCost, curCost = AIlib.compareAIobjects( inp, obj, obj2 )
 
-		return dCost
+		return dCost, curCost
 
-	def getChangeInCost( obj, theta, layerIndex ):
+	def getChangeInCost( obj, inp, theta, layerIndex ):
 		mirrorObj = copy(obj)
 
 		# Fill the buffer with None so that the dCost can replace it later
-		mirrorObj.weights[layerIndex].fill(None)
-		mirrorObj.bias[layerIndex].fill(None)
+		dCost_W = np.zeros( shape = mirrorObj.weights[layerIndex].shape ) # fill it with a placeholder
+		dCost_B = np.zeros( shape = mirrorObj.bias[layerIndex].shape )
+
+		# Get the cost change for the weights
+		weightLenX = len(dCost_W)
+		weightLenY = len(dCost_W[0])
+
+		for x in range(weightLenX): # get the dCost for each x,y
+			for y in range(weightLenY):
+				dCost_W[x][y], curCostWeight = AIlib.compareInstanceWeight( obj, inp, theta, layerIndex, x, y )
+
+		# Get the cost change for the biases
+		biasLenY = len(dCost_B[0])
+		for index in range(biasLenY):
+			dCost_B[0][index], curCostBias = AIlib.compareInstanceBias( obj, inp, theta, layerIndex, index )
+
+		return dCost_W, dCost_B, (curCostBias + curCostWeight)/2
 
 
 
@@ -83,6 +98,8 @@ class AIlib:
 		# Check if grads exists, if not create the buffer
 		if( not grads ):
 			grads = [None] * (maxLayer+1)
+		
+		dCost_W, dCost_B, meanCurCost = AIlib.getChangeInCost( obj, inp, theta, layerIndex )
 
 		# Calculate the gradient for the layer
 		weightDer = AIlib.propDer( dCost_W, theta )
@@ -98,7 +115,7 @@ class AIlib:
 		if( newLayer <= maxLayer ):
 			return AIlib.gradient( inp, obj, theta, maxLayer, newLayer, grads, obj1, obj2 )
 		else:
-			return grads, res1, cost1
+			return grads, meanCurCost
 
 	def mutateProps( inpObj, maxLen:int, gradient:list ):
 		obj = copy(inpObj)
@@ -120,10 +137,10 @@ class AIlib:
 
 		while( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
 			maxLen = len(obj.bias)
-			grads, res, curCost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
+			grads, curCost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
 
 			obj = AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
-			print("Cost:", curCost, "|", inp, res)
+			print("Cost:", curCost)
 
 
 		print("DONE\n")
