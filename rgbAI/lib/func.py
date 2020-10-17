@@ -53,31 +53,34 @@ class AIlib:
 		dCost = cost2 - cost1
 		return dCost
 
-	def compareInstance( obj, theta, layerIndex, neuronIndex=0 ):
+	def compareInstance( obj, theta, layerIndex, neuronIndex_X=0, neuronIndex_Y=0 ):
 		# Create new instances of the object
 		obj2_w = copy(obj) # annoying way to create a new instance of the object
 		obj2_b = copy(obj)
 
-		obj2_w.weights[layerIndex][neuronIndex] += theta # mutate the second objects neuron
+		obj2_w.weights[layerIndex][neuronIndex_X][neuronIndex_Y] += theta # mutate the second objects neuron
 		dCost_weight = AIlib.compareAIobjects( obj, obj2_w ) # compare the two and get the dCost with respect to the weights
 
-		obj2_b.bias[layerIndex][neuronIndex] += theta # do the same thing for the bias
+		obj2_b.bias[layerIndex][neuronIndex_X][neuronIndex_Y] += theta # do the same thing for the bias
 		dCost_bias = AIlib.compareAIobjects( obj, obj2_b )
 
 		return dCost_weight, dCost_bias
+
+	def getChangeInCost( obj, theta, layerIndex ):
+		mirrorObj = copy(obj)
+
+		# Fill the buffer with None so that the dCost can replace it later
+		mirrorObj.weights[layerIndex].fill(None)
+		mirrorObj.bias[layerIndex].fill(None)
 
 	def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads=None, obj1=None, obj2=None ): # Calculate the gradient for that prop
 		# Check if grads exists, if not create the buffer
 		if( not grads ):
 			grads = [None] * (maxLayer+1)
 
-		# Create the change in variable (which is constant to theta)
-		dWeight = np.zeros(shape=obj.weights[layerIndex].shape).fill(theta) # since (x + theta) - (x) = theta then just fill it with theta
-		dBias = np.zeros(shape=obj.bias[layerIndex].shape).fill(theta)
-
 		# Calculate the gradient for the layer
-		weightDer = AIlib.propDer( dCost, dWeight )
-		biasDer = AIlib.propDer( dCost, dBias )
+		weightDer = AIlib.propDer( dCost_W, theta )
+		biasDer = AIlib.propDer( dCost_B, theta )
 
 		# Append the gradients to the list
 		grads[layerIndex] = {
@@ -112,6 +115,7 @@ class AIlib:
 		while( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
 			maxLen = len(obj.bias)
 			grads, res, curCost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
+
 			obj = AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
 			print("Cost:", curCost, "|", inp, res)
 
