@@ -41,15 +41,7 @@ class AIlib:
 		# Calculate the partial derivative for that prop
 		return dCost / dProp
 
-	def compareInstance( obj, neuronIndex ):
-		# Create new instances of the object
-		if( not obj1 or not obj2 ):
-			obj1 = copy(obj) # annoying way to create a new instance of the object
-			obj2 = copy(obj)
-
-		obj2.weights[layerIndex][neuronIndex] += theta # mutate the second object
-		# obj2.bias[layerIndex] += theta
-
+	def compareAIobjects( obj1, obj2 ):
 		# Compare the two instances
 		res1 = AIlib.think( inp, obj1 )
 		cost1 = AIlib.getThinkCost( inp, res1 ) # get the cost
@@ -59,10 +51,25 @@ class AIlib:
 
 		# Actually calculate stuff 
 		dCost = cost2 - cost1
-		dWeight = obj2.weights[layerIndex] - obj1.weights[layerIndex]
-		#dBias = obj2.bias[layerIndex] - obj1.bias[layerIndex]
+		return dCost
 
-		return dCost, dWeight
+	def compareInstance( obj, theta, neuronIndex ):
+		# Create new instances of the object
+		obj2_w = copy(obj) # annoying way to create a new instance of the object
+		obj2_b = copy(obj)
+
+		obj2_w.weights[layerIndex][neuronIndex] += theta # mutate the second objects neuron
+		dCost_weight = AIlib.compareAIobjects( obj, obj2_w ) # compare the two and get the dCost with respect to the weights
+
+		obj2_b.bias[layerIndex][neuronIndex] += theta
+		dCost_bias = AIlib.compareAIobjects( obj, obj2_b )
+
+		# obj2.bias[layerIndex] += theta
+
+		# dWeight = obj2.weights[layerIndex] - obj1.weights[layerIndex]
+		# dBias = obj2.bias[layerIndex] - obj1.bias[layerIndex]
+
+		return dCost
 
 	def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads=None, obj1=None, obj2=None ): # Calculate the gradient for that prop
 		# Check if grads exists, if not create the buffer
