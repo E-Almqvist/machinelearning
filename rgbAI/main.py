@@ -34,7 +34,6 @@ class rgb(object):
 	def think( self, inp:np.array ):
 		print("\n-Input-")
 		print(inp)
-		print("\n")
 
 		res = ai.think( inp, self )
 
