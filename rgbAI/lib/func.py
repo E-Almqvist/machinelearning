@@ -53,7 +53,7 @@ class AIlib:
 		dCost = cost2 - cost1
 		return dCost
 
-	def compareInstance( obj, theta, neuronIndex ):
+	def compareInstance( obj, theta, layerIndex, neuronIndex=0 ):
 		# Create new instances of the object
 		obj2_w = copy(obj) # annoying way to create a new instance of the object
 		obj2_b = copy(obj)
@@ -61,20 +61,19 @@ class AIlib:
 		obj2_w.weights[layerIndex][neuronIndex] += theta # mutate the second objects neuron
 		dCost_weight = AIlib.compareAIobjects( obj, obj2_w ) # compare the two and get the dCost with respect to the weights
 
-		obj2_b.bias[layerIndex][neuronIndex] += theta
+		obj2_b.bias[layerIndex][neuronIndex] += theta # do the same thing for the bias
 		dCost_bias = AIlib.compareAIobjects( obj, obj2_b )
 
-		# obj2.bias[layerIndex] += theta
-
-		# dWeight = obj2.weights[layerIndex] - obj1.weights[layerIndex]
-		# dBias = obj2.bias[layerIndex] - obj1.bias[layerIndex]
-
-		return dCost
+		return dCost_weight, dCost_bias
 
 	def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, grads=None, obj1=None, obj2=None ): # Calculate the gradient for that prop
 		# Check if grads exists, if not create the buffer
 		if( not grads ):
 			grads = [None] * (maxLayer+1)
+
+		# Create the change in variable (which is constant to theta)
+		dWeight = np.zeros(shape=obj.weights[layerIndex].shape).fill(theta) # since (x + theta) - (x) = theta then just fill it with theta
+		dBias = np.zeros(shape=obj.bias[layerIndex].shape).fill(theta)
 
 		# Calculate the gradient for the layer
 		weightDer = AIlib.propDer( dCost, dWeight )
