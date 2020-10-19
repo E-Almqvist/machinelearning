@@ -115,13 +115,31 @@ class AIlib:
 		if( newLayer <= maxLayer ):
 			return AIlib.gradient( inp, obj, theta, maxLayer, newLayer, grads, obj1, obj2 )
 		else:
-			return grads, meanCurCost
+			return grads, dCost_W, dCost_B, meanCurCost
+	
+	def calculateSteepness( cost:float, gradient:np.matrix ):
+		gradLen = np.linalg.norm( gradient ) # basically calculate the hessian but transform the gradient into a scalar (its length)
+		ddCost = cost / gradLen
 
-	def mutateProps( inpObj, maxLen:int, gradient:list ):
-		obj = copy(inpObj)
+		return np.arcsin( ddCost ) / 180 # the gradients "angle" cannot become steeper than 180.
+
+	def getLearningRate( cost:float, gradient:dict, maxLen:int ):
+		learningrate = {
+			"weight": [],
+			"bias": []
+		}
+
 		for i in range(maxLen):
-			obj.weights[i] -= obj.learningrate * gradient[i]["weight"] # mutate the weights
-			obj.bias[i] -= obj.learningrate * gradient[i]["bias"]
+			learningrate["weights"][i] = AIlib.calculateSteepness( cost, gradient["weight"][i] ) 
+			learningrate["bias"][i] = AIlib.calculateSteepness( cost, gradient["bias"][i] ) 
+
+
+	def mutateProps( inpObj, curCost:float, maxLen:int, gradient:list ):
+		obj = copy(inpObj)
+
+		for i in range(maxLen):
+			obj.weights[i] -= AIlib.getLearningRate( curCost, gradient[i]["weight"], maxLen ) * gradient[i]["weight"] # mutate the weights
+			obj.bias[i] -= AIlib.getLearningRate( curCost, gradient[i]["weight"], maxLen ) * gradient[i]["bias"]
 
 		return obj
 
@@ -137,9 +155,9 @@ class AIlib:
 
 		while( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
 			maxLen = len(obj.bias)
-			grads, curCost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
+			grads, costW, costB, curCost = AIlib.gradient( inp, obj, theta, maxLen - 1 )
 
-			obj = AIlib.mutateProps( obj, maxLen, grads ) # mutate the props for next round
+			obj = AIlib.mutateProps( obj, curCost, maxLen, grads ) # mutate the props for next round
 			print(f"Cost: {curCost}")
 
 
