@@ -1,13 +1,15 @@
 import numpy as np
 from copy import deepcopy as copy
-import os
 
 DEBUG_BUFFER = {
 	"cost": None,
 	"lr": {
 		"weight": None,
 		"bias": None
-	}
+	},
+	"inp": None,
+	"predicted": None,
+	"correct": None
 }
 
 def sigmoid(x):
@@ -27,6 +29,10 @@ def calcCost( predicted:np.array, correct:np.array ): # cost function, lower -> 
 
 def getThinkCost( inp:np.array, predicted:np.array ):
 	corr = correctFunc(inp)
+
+	global DEBUG_BUFFER
+	DEBUG_BUFFER["correct"] = corr
+
 	return calcCost( predicted, corr )
 
 def genRandomMatrix( x:int, y:int, min: float=0.0, max: float=1.0 ): # generate a matrix with x, y dimensions with random values from min-max in it
@@ -56,6 +62,7 @@ def compareAIobjects( inp, obj1, obj2 ):
 	
 	global DEBUG_BUFFER
 	DEBUG_BUFFER["cost"] = cost1
+	DEBUG_BUFFER["predicted"] = res1
 
 	res2 = think( inp, obj2 )
 	cost2 = getThinkCost( inp, res2 ) # get the second cost
@@ -163,11 +170,14 @@ def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
 	return obj
 
 def printProgress():
-	global DEBUG_BUFFER
+	import os
 
+	global DEBUG_BUFFER
 	os.system("clear")
 	print(f"LR: {DEBUG_BUFFER['lr']}")
 	print(f"Cost: {DEBUG_BUFFER['cost']}")
+	print("")
+	print(f"inp: {DEBUG_BUFFER['inp']} | pre: {DEBUG_BUFFER['predicted']} cor: {DEBUG_BUFFER['correct']}")
 
 def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None, trainForever: bool=False ):
 	# Calculate the derivative for:
@@ -177,7 +187,11 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 	# i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
 	# So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
-	inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
+	#inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
+	inp = np.asarray([1.0, 1.0, 1.0])
+
+	global DEBUG_BUFFER
+	DEBUG_BUFFER["inp"] = inp
 	
 	while( trainForever or not curCost or curCost > targetCost ): # targetCost is the target for the cost function
 		maxLen = len(obj.bias)
@@ -190,3 +204,5 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 	print("DONE\n")
 	print(obj.weights)
 	print(obj.bias)
+
+	return obj
