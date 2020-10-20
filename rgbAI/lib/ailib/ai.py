@@ -186,7 +186,7 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 	# So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
 	count = 0
-	while( count <= 1000 ): # targetCost is the target for the cost function
+	while( count <= 10000 ): # targetCost is the target for the cost function
 		count += 1
 		inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
 		# inp = np.asarray([1.0, 1.0, 1.0])

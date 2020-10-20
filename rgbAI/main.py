@@ -7,11 +7,11 @@ class rgb(object):
 
 		if( not loadedWeights or not loadedBias ): # if one is null (None) then just generate new ones
 			print("Generating weights and biases...")
-			self.weights = [ ai.genRandomMatrix(3, 3), ai.genRandomMatrix(3, 3), ai.genRandomMatrix(3, 3) ] # array of matrices of weights
+			self.weights = [ ai.genRandomMatrix(3, 3), ai.genRandomMatrix(3, 3) ] # array of matrices of weights
 			# 3 input neurons -> 3 hidden neurons -> 3 hidden neurons -> 3 output neurons
 
 			# Generate the biases
-			self.bias = [ ai.genRandomMatrix(1, 3), ai.genRandomMatrix(1, 3), ai.genRandomMatrix(1, 3) ]
+			self.bias = [ ai.genRandomMatrix(1, 3), ai.genRandomMatrix(1, 3) ]
 			# This doesn't look very good, but it works so...
 
 			print( self.weights )
