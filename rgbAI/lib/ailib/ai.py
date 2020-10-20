@@ -137,8 +137,11 @@ def mutateProps( inpObj, curCost:float, maxLen:int, gradient:list ):
 	obj = copy(inpObj)
 
 	for i in range(maxLen):
-		obj.weights[i] -= getLearningRate( curCost, gradient[i]["weight"], maxLen ) * gradient[i]["weight"] # mutate the weights
-		obj.bias[i] -= getLearningRate( curCost, gradient[i]["weight"], maxLen ) * gradient[i]["bias"]
+		# obj.weights[i] -= getLearningRate( curCost, gradient[i]["weight"], maxLen ) * gradient[i]["weight"] # mutate the weights
+		# obj.bias[i] -= getLearningRate( curCost, gradient[i]["weight"], maxLen ) * gradient[i]["bias"]
+		obj.weights[i] -= obj.learningrate * gradient[i]["weight"] # mutate the weights
+		obj.bias[i] -= obj.learningrate * gradient[i]["bias"]
+
 
 	return obj
 
@@ -150,9 +153,10 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 	# i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
 	# So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
-	inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
-
+	
 	while( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
+		inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
+
 		maxLen = len(obj.bias)
 		grads, costW, costB, curCost = gradient( inp, obj, theta, maxLen - 1 )
 
