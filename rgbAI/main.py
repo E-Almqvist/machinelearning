@@ -14,8 +14,6 @@ class rgb(object):
 			self.bias = [ ai.genRandomMatrix(1, 8), ai.genRandomMatrix(1, 8), ai.genRandomMatrix(1, 8), ai.genRandomMatrix(1, 3) ]
 			# This doesn't look very good, but it works so...
 
-			self.learningrate = 0.01 # the learning rate of this ai
-
 			print( self.weights )
 			print( self.bias )
 
@@ -29,7 +27,7 @@ class rgb(object):
 		return cost
 
 	def learn( self ):
-		ai.learn( 3, 0.0001, self, 0.000001 )
+		ai.learn( 3, 0.0001, self, 3e-7 )
 
 	def think( self, inp:np.array ):
 		print("\n-Input-")

@@ -2,6 +2,14 @@ import numpy as np
 from copy import deepcopy as copy
 import os
 
+DEBUG_BUFFER = {
+	"cost": None,
+	"lr": {
+		"weight": None,
+		"bias": None
+	}
+}
+
 def sigmoid(x):
 	return 1/(1 + np.exp(-x))
 
@@ -45,6 +53,9 @@ def compareAIobjects( inp, obj1, obj2 ):
 	# Compare the two instances
 	res1 = think( inp, obj1 )
 	cost1 = getThinkCost( inp, res1 ) # get the cost
+	
+	global DEBUG_BUFFER
+	DEBUG_BUFFER["cost"] = cost1
 
 	res2 = think( inp, obj2 )
 	cost2 = getThinkCost( inp, res2 ) # get the second cost
@@ -122,13 +133,16 @@ def calculateSteepness( cost:float, gradient:np.matrix ):
 	ddCost = cost / gradLen
 	out = np.absolute( np.arcsin( np.sin(ddCost) ) )
 
-	return out 
+	return out
 
 def getLearningRate( cost:float, gradient:dict, maxLen:int ):
 	learningrate = {
 		"weight": calculateSteepness( cost, gradient["weight"] ),
 		"bias": calculateSteepness( cost, gradient["bias"] )
 	}
+
+	global DEBUG_BUFFER
+	DEBUG_BUFFER["lr"] = learningrate
 
 	return learningrate
 
@@ -148,7 +162,14 @@ def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
 
 	return obj
 
-def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None ):
+def printProgress():
+	global DEBUG_BUFFER
+
+	os.system("clear")
+	print(f"LR: {DEBUG_BUFFER['lr']}")
+	print(f"Cost: {DEBUG_BUFFER['cost']}")
+
+def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None, trainForever: bool=False ):
 	# Calculate the derivative for:
 	# Cost in respect to weights
 	# Cost in respect to biases
@@ -158,14 +179,13 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 
 	inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
 	
-	while( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
+	while( trainForever or not curCost or curCost > targetCost ): # targetCost is the target for the cost function
 		maxLen = len(obj.bias)
 		grads, costW, costB, curCost = gradient( inp, obj, theta, maxLen - 1 )
 
 		obj = mutateProps( obj, curCost, maxLen, grads ) # mutate the props for next round
-		os.system("clear")
-		print(f"Cost: {curCost}")
 
+		printProgress()
 
 	print("DONE\n")
 	print(obj.weights)
