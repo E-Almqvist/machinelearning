@@ -119,19 +119,15 @@ def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, g
 def calculateSteepness( cost:float, gradient:np.matrix ):
 	gradLen = np.linalg.norm( gradient ) # basically calculate the hessian but transform the gradient into a scalar (its length)
 	ddCost = cost / gradLen
-	out = np.log10(ddCost)
+	out = np.absolute( np.arcsin( np.sin(ddCost) ) )
 
 	return out 
 
-def getLearningRate( cost:float, gradient:np.matrix, maxLen:int ):
+def getLearningRate( cost:float, gradient:dict, maxLen:int ):
 	learningrate = {
-		"weight": [None] * maxLen,
-		"bias": [None] * maxLen
+		"weight": calculateSteepness( cost, gradient["weight"] ),
+		"bias": calculateSteepness( cost, gradient["bias"] )
 	}
-
-	for i in range(maxLen):
-		learningrate["weight"][i] = calculateSteepness( cost, gradient ) 
-		learningrate["bias"][i] = calculateSteepness( cost, gradient )
 
 	return learningrate
 
@@ -140,7 +136,7 @@ def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
 	obj = copy(inpObj)
 
 	for layer in range(maxLayer):
-		lr = getLearningRate( curCost, gradient[layer]["weight"], maxLayer )
+		lr = getLearningRate( curCost, gradient[layer], maxLayer )
 		print(lr)
 
 		obj.weights[layer] -= lr["weight"] * gradient[layer]["weight"] # mutate the weights
@@ -159,10 +155,9 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 	# i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
 	# So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
+	inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
 	
 	while( not curCost or curCost > targetCost ): # targetCost is the target for the cost function
-		inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
-
 		maxLen = len(obj.bias)
 		grads, costW, costB, curCost = gradient( inp, obj, theta, maxLen - 1 )
 
