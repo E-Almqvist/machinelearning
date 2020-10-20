@@ -119,28 +119,34 @@ def gradient( inp:np.array, obj, theta:float, maxLayer:int, layerIndex: int=0, g
 def calculateSteepness( cost:float, gradient:np.matrix ):
 	gradLen = np.linalg.norm( gradient ) # basically calculate the hessian but transform the gradient into a scalar (its length)
 	ddCost = cost / gradLen
+	out = np.log10(ddCost)
 
-	return np.arcsin( ddCost ) / 180 # the gradients "angle" cannot become steeper than 180.
+	return out 
 
-def getLearningRate( cost:float, gradient:dict, maxLen:int ):
+def getLearningRate( cost:float, gradient:np.matrix, maxLen:int ):
 	learningrate = {
-		"weight": [],
-		"bias": []
+		"weight": [None] * maxLen,
+		"bias": [None] * maxLen
 	}
 
 	for i in range(maxLen):
-		learningrate["weights"][i] = calculateSteepness( cost, gradient["weight"][i] ) 
-		learningrate["bias"][i] = calculateSteepness( cost, gradient["bias"][i] ) 
+		learningrate["weight"][i] = calculateSteepness( cost, gradient ) 
+		learningrate["bias"][i] = calculateSteepness( cost, gradient )
+
+	return learningrate
 
 
-def mutateProps( inpObj, curCost:float, maxLen:int, gradient:list ):
+def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
 	obj = copy(inpObj)
 
-	for i in range(maxLen):
-		# obj.weights[i] -= getLearningRate( curCost, gradient[i]["weight"], maxLen ) * gradient[i]["weight"] # mutate the weights
-		# obj.bias[i] -= getLearningRate( curCost, gradient[i]["weight"], maxLen ) * gradient[i]["bias"]
-		obj.weights[i] -= obj.learningrate * gradient[i]["weight"] # mutate the weights
-		obj.bias[i] -= obj.learningrate * gradient[i]["bias"]
+	for layer in range(maxLayer):
+		lr = getLearningRate( curCost, gradient[layer]["weight"], maxLayer )
+		print(lr)
+
+		obj.weights[layer] -= lr["weight"] * gradient[layer]["weight"] # mutate the weights
+		obj.bias[layer] -= lr["bias"] * gradient[layer]["bias"]
+		# obj.weights[i] -= obj.learningrate * gradient[i]["weight"] # mutate the weights
+		# obj.bias[i] -= obj.learningrate * gradient[i]["bias"]
 
 
 	return obj
