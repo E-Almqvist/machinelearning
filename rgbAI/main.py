@@ -7,11 +7,11 @@ class rgb(object):
 
 		if( not loadedWeights or not loadedBias ): # if one is null (None) then just generate new ones
 			print("Generating weights and biases...")
-			self.weights = [ ai.genRandomMatrix(3, 8), ai.genRandomMatrix(8, 8), ai.genRandomMatrix(8, 3) ] # array of matrices of weights
+			self.weights = [ ai.genRandomMatrix(3, 8), ai.genRandomMatrix(8, 8), ai.genRandomMatrix(8, 8), ai.genRandomMatrix(8, 3) ] # array of matrices of weights
 			# 3 input neurons -> 8 hidden neurons -> 8 hidden neurons -> 3 output neurons
 
 			# Generate the biases
-			self.bias = [ ai.genRandomMatrix(1, 8), ai.genRandomMatrix(1, 8), ai.genRandomMatrix(1, 3) ]
+			self.bias = [ ai.genRandomMatrix(1, 8), ai.genRandomMatrix(1, 8), ai.genRandomMatrix(1, 8), ai.genRandomMatrix(1, 3) ]
 			# This doesn't look very good, but it works so...
 
 			self.learningrate = 0.01 # the learning rate of this ai
@@ -29,7 +29,7 @@ class rgb(object):
 		return cost
 
 	def learn( self ):
-		ai.learn( 3, 0.0001, self, 0.001 )
+		ai.learn( 3, 0.0001, self, 0.000001 )
 
 	def think( self, inp:np.array ):
 		print("\n-Input-")

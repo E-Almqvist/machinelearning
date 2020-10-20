@@ -1,5 +1,6 @@
 import numpy as np
 from copy import deepcopy as copy
+import os
 
 def sigmoid(x):
 	return 1/(1 + np.exp(-x))
@@ -137,7 +138,7 @@ def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
 
 	for layer in range(maxLayer):
 		lr = getLearningRate( curCost, gradient[layer], maxLayer )
-		print(lr)
+		# print(lr)
 
 		obj.weights[layer] -= lr["weight"] * gradient[layer]["weight"] # mutate the weights
 		obj.bias[layer] -= lr["bias"] * gradient[layer]["bias"]
@@ -162,6 +163,7 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 		grads, costW, costB, curCost = gradient( inp, obj, theta, maxLen - 1 )
 
 		obj = mutateProps( obj, curCost, maxLen, grads ) # mutate the props for next round
+		os.system("clear")
 		print(f"Cost: {curCost}")
 
 
