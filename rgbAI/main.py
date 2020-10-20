@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-from lib.func import AIlib as ai
+from lib.ailib import ai
 
 class rgb(object):
 	def __init__(self, loadedWeights: np.matrix=None, loadedBias: np.matrix=None):
