@@ -7,11 +7,11 @@ class rgb(object):
 
 		if( not loadedWeights or not loadedBias ): # if one is null (None) then just generate new ones
 			print("Generating weights and biases...")
-			self.weights = [ ai.genRandomMatrix(3, 16), ai.genRandomMatrix(16, 16), ai.genRandomMatrix(16, 16), ai.genRandomMatrix(16, 3) ] # array of matrices of weights
-			# 3 input neurons -> 16 hidden neurons -> 16 hidden neurons -> 3 output neurons
+			self.weights = [ ai.genRandomMatrix(3, 3), ai.genRandomMatrix(3, 3), ai.genRandomMatrix(3, 3) ] # array of matrices of weights
+			# 3 input neurons -> 3 hidden neurons -> 3 hidden neurons -> 3 output neurons
 
 			# Generate the biases
-			self.bias = [ ai.genRandomMatrix(1, 16), ai.genRandomMatrix(1, 16), ai.genRandomMatrix(1, 16), ai.genRandomMatrix(1, 3) ]
+			self.bias = [ ai.genRandomMatrix(1, 3), ai.genRandomMatrix(1, 3), ai.genRandomMatrix(1, 3) ]
 			# This doesn't look very good, but it works so...
 
 			print( self.weights )
@@ -27,7 +27,7 @@ class rgb(object):
 		return cost
 
 	def learn( self ):
-		ai.learn( 3, 0.0001, self, 3e-7 )
+		ai.learn( 3, 0.001, self, 0.001 )
 
 	def think( self, inp:np.array ):
 		print("\n-Input-")
@@ -41,11 +41,11 @@ class rgb(object):
 
 def init():
 	bot = rgb()
-	bot = bot.learn()
+	bot.learn()
 
-	inpArr = np.asarray([1.0, 1.0, 1.0])
-	res = bot.think( inpArr )
-	err = bot.calcError( inpArr, res )
-	print(err)
+	#inpArr = np.asarray([1.0, 1.0, 1.0])
+	#res = bot.think( inpArr )
+	#err = bot.calcError( inpArr, res )
+	#print(err)
 
 init()

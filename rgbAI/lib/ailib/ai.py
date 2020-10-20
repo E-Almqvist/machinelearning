@@ -9,7 +9,8 @@ DEBUG_BUFFER = {
 	},
 	"inp": None,
 	"predicted": None,
-	"correct": None
+	"correct": None,
+	"gen": None
 }
 
 def sigmoid(x):
@@ -155,7 +156,7 @@ def getLearningRate( cost:float, gradient:dict, maxLen:int ):
 
 
 def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
-	obj = copy(inpObj)
+	obj = inpObj
 
 	for layer in range(maxLayer):
 		lr = getLearningRate( curCost, gradient[layer], maxLayer )
@@ -163,11 +164,8 @@ def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
 
 		obj.weights[layer] -= lr["weight"] * gradient[layer]["weight"] # mutate the weights
 		obj.bias[layer] -= lr["bias"] * gradient[layer]["bias"]
-		# obj.weights[i] -= obj.learningrate * gradient[i]["weight"] # mutate the weights
-		# obj.bias[i] -= obj.learningrate * gradient[i]["bias"]
-
-
-	return obj
+		# obj.weights[layer] -= 0.0001 * gradient[layer]["weight"] # mutate the weights
+		# obj.bias[layer] -= 0.0001 * gradient[layer]["bias"]
 
 def printProgress():
 	import os
@@ -176,10 +174,10 @@ def printProgress():
 	os.system("clear")
 	print(f"LR: {DEBUG_BUFFER['lr']}")
 	print(f"Cost: {DEBUG_BUFFER['cost']}")
-	print("")
+	print(f"Gen: {DEBUG_BUFFER['gen']}")
 	print(f"inp: {DEBUG_BUFFER['inp']} | pre: {DEBUG_BUFFER['predicted']} cor: {DEBUG_BUFFER['correct']}")
 
-def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None, trainForever: bool=False ):
+def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None ):
 	# Calculate the derivative for:
 	# Cost in respect to weights
 	# Cost in respect to biases
@@ -187,17 +185,20 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 	# i.e. : W' = W - lr * gradient (respect to W in layer i) = W - lr*[ dC / dW[i] ... ]
 	# So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
-	#inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
-	inp = np.asarray([1.0, 1.0, 1.0])
+	count = 0
+	while( count <= 1000 ): # targetCost is the target for the cost function
+		count += 1
+		inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
+		# inp = np.asarray([1.0, 1.0, 1.0])
 
-	global DEBUG_BUFFER
-	DEBUG_BUFFER["inp"] = inp
-	
-	while( trainForever or not curCost or curCost > targetCost ): # targetCost is the target for the cost function
+		global DEBUG_BUFFER
+		DEBUG_BUFFER["inp"] = inp
+		DEBUG_BUFFER["gen"] = count
+
 		maxLen = len(obj.bias)
 		grads, costW, costB, curCost = gradient( inp, obj, theta, maxLen - 1 )
 
-		obj = mutateProps( obj, curCost, maxLen, grads ) # mutate the props for next round
+		mutateProps( obj, curCost, maxLen, grads ) # mutate the props for next round
 
 		printProgress()
 
@@ -205,4 +206,8 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 	print(obj.weights)
 	print(obj.bias)
 
-	return obj
+	test = think( np.asarray([1.0, 1.0, 1.0]), obj )
+	print(f"Test 1: {test}")
+
+	test2 = think( np.asarray([0.0, 0.0, 0.0]), obj )
+	print(f"Test 2: {test2}")
