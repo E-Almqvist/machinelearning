@@ -177,7 +177,7 @@ def printProgress():
 	print(f"Gen: {DEBUG_BUFFER['gen']}")
 	print(f"inp: {DEBUG_BUFFER['inp']} | pre: {DEBUG_BUFFER['predicted']} cor: {DEBUG_BUFFER['correct']}")
 
-def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None ):
+def learn( inputNum:int, obj, theta:float, traintimes:int ):
 	# Calculate the derivative for:
 	# Cost in respect to weights
 	# Cost in respect to biases
@@ -186,7 +186,7 @@ def learn( inputNum:int, targetCost:float, obj, theta:float, curCost: float=None
 	# So if we change all the weights with i.e. 0.01 = theta, then we can derive the gradient with math and stuff
 
 	count = 0
-	while( count <= 10000 ): # targetCost is the target for the cost function
+	while( count <= traintimes ): # targetCost is the target for the cost function
 		count += 1
 		inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
 		# inp = np.asarray([1.0, 1.0, 1.0])
