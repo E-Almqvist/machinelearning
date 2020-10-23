@@ -160,12 +160,9 @@ def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
 
 	for layer in range(maxLayer):
 		lr = getLearningRate( curCost, gradient[layer], maxLayer )
-		# print(lr)
 
 		obj.weights[layer] -= lr["weight"] * gradient[layer]["weight"] # mutate the weights
 		obj.bias[layer] -= lr["bias"] * gradient[layer]["bias"]
-		# obj.weights[layer] -= 0.0001 * gradient[layer]["weight"] # mutate the weights
-		# obj.bias[layer] -= 0.0001 * gradient[layer]["bias"]
 
 def printProgress():
 	import os
