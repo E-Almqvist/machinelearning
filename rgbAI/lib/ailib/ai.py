@@ -187,7 +187,6 @@ def learn( inputNum:int, obj, theta:float, traintimes:int ):
 
 	count = 0
 	while( count <= traintimes ): # targetCost is the target for the cost function
-		count += 1
 		inp = np.asarray(np.random.rand( 1, inputNum ))[0] # create a random learning sample
 		# inp = np.asarray([1.0, 1.0, 1.0])
 
@@ -201,6 +200,7 @@ def learn( inputNum:int, obj, theta:float, traintimes:int ):
 		mutateProps( obj, curCost, maxLen, grads ) # mutate the props for next round
 
 		printProgress()
+		count += 1
 
 	print("DONE\n")
 	print(obj.weights)
