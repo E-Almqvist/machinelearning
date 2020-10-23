@@ -165,10 +165,7 @@ def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
 		obj.bias[layer] -= lr["bias"] * gradient[layer]["bias"]
 
 def printProgress():
-	import os
-
 	global DEBUG_BUFFER
-	os.system("clear")
 	print(f"LR: {DEBUG_BUFFER['lr']}")
 	print(f"Cost: {DEBUG_BUFFER['cost']}")
 	print(f"Gen: {DEBUG_BUFFER['gen']}")
