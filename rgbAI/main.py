@@ -43,9 +43,4 @@ def init():
 	bot = rgb()
 	bot.learn()
 
-	#inpArr = np.asarray([1.0, 1.0, 1.0])
-	#res = bot.think( inpArr )
-	#err = bot.calcError( inpArr, res )
-	#print(err)
-
 init()
