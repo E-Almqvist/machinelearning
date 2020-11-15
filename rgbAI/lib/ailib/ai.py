@@ -166,10 +166,7 @@ def mutateProps( inpObj, curCost:float, maxLayer:int, gradient:list ):
 
 def printProgress():
 	global DEBUG_BUFFER
-	print(f"LR: {DEBUG_BUFFER['lr']}", end="\r")
-	print(f"Cost: {DEBUG_BUFFER['cost']}", end="\r")
-	print(f"Gen: {DEBUG_BUFFER['gen']}", end="\r")
-	print(f"inp: {DEBUG_BUFFER['inp']} | pre: {DEBUG_BUFFER['predicted']} cor: {DEBUG_BUFFER['correct']}", end="\r")
+	print(f"[{DEBUG_BUFFER['gen']}] inp: {DEBUG_BUFFER['inp']} | cost: {DEBUG_BUFFER['cost']} pre: {DEBUG_BUFFER['predicted']} cor: {DEBUG_BUFFER['correct']}", end="\r")
 
 def learn( inputNum:int, obj, theta:float, traintimes:int ):
 	# Calculate the derivative for:
@@ -196,7 +193,7 @@ def learn( inputNum:int, obj, theta:float, traintimes:int ):
 		printProgress()
 		count += 1
 
-	print("DONE\n")
+	print("\nDONE\n")
 	print(obj.weights)
 	print(obj.bias)
 
