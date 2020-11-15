@@ -169,7 +169,7 @@ def printProgress():
 	print(f"LR: {DEBUG_BUFFER['lr']}")
 	print(f"Cost: {DEBUG_BUFFER['cost']}")
 	print(f"Gen: {DEBUG_BUFFER['gen']}")
-	print(f"inp: {DEBUG_BUFFER['inp']} | pre: {DEBUG_BUFFER['predicted']} cor: {DEBUG_BUFFER['correct']}")
+	print(f"inp: {DEBUG_BUFFER['inp']} | pre: {DEBUG_BUFFER['predicted']} cor: {DEBUG_BUFFER['correct']}", end="\r")
 
 def learn( inputNum:int, obj, theta:float, traintimes:int ):
 	# Calculate the derivative for:
